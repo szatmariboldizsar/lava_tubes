@@ -13,12 +13,36 @@ namespace lava_tubes
         public int Height { get; set; }
         public bool IsLowPoint { get; set; } = true;
         public bool IsEncountered { get; set; } = false;
+        public int Risk
+        {
+            get
+            { 
+                return this.IsLowPoint ? this.Height + 1 : 0; 
+            }
+        }
         public Tube(int height)
         {
             Height = height;
         }
+        public static void initialize(string input)
+        {
+            createMap(input);
+            scanAdjacents();
+            setLowPoints();
+        }
 
-        public static void createRow(string nums)
+        private static void createMap(string input)
+        {
+            using (StreamReader reader = new StreamReader(input))
+            {
+                while (!reader.EndOfStream)
+                {
+                    createRow(reader.ReadLine());
+                }
+            }
+        }
+
+        private static void createRow(string nums)
         {
             List<Tube> tubes = new List<Tube>();
             for (int i = 0; i < nums.Length; i++)
@@ -28,8 +52,7 @@ namespace lava_tubes
             }
             _tubes.Add(tubes);
         }
-
-        public static void mapping()
+        private static void scanAdjacents()
         {
             for (int i = 0; i < _tubes.Count; i++)
             {
@@ -63,42 +86,37 @@ namespace lava_tubes
                         _tubes[i][j].Adjacents.Add(_tubes[i][j + 1]);
                     }
                 }
-
             }
-            foreach (List<Tube> row in _tubes)
+        }
+        private static void setLowPoints()
+        {
+            for (int i = 0; i < _tubes.Count; i++)
             {
-                foreach (Tube tube in row)
+                for (int j = 0; j < _tubes[i].Count; j++)
                 {
-
-                    foreach (Tube adjacent in tube.Adjacents)
+                    for (int k = 0; k < _tubes[i][j].Adjacents.Count; k++)
                     {
-                        if (tube.Height >= adjacent.Height)
+                        if (_tubes[i][j].Height >= _tubes[i][j].Adjacents[k].Height)
                         {
-                            tube.IsLowPoint = false;
+                            _tubes[i][j].IsLowPoint = false;
                             break;
                         }
                     }
                 }
             }
         }
-        public int Risk()
-        {
-            return this.IsLowPoint ? this.Height + 1 : 0;
-        }
-
         public static int SumOfRisks()
         {
             int sum = 0;
-            foreach (List<Tube> row in _tubes)
+            for (int i = 0; i < _tubes.Count; i++)
             {
-                foreach (Tube tube in row)
+                for (int j = 0; j < _tubes[i].Count; j++)
                 {
-                    sum += tube.Risk();
+                    sum += _tubes[i][j].Risk;
                 }
             }
             return sum;
         }
-
         public static void BasinScan()
         {
             foreach (List<Tube> row in _tubes)
