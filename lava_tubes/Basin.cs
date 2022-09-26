@@ -10,45 +10,55 @@ namespace lava_tubes
     {
         private static List<Basin> _basins = new List<Basin>();
         public List<Tube> Tubes = new List<Tube>();
-        public int Size = 0;
-
-        public Basin()
+        public int Size
+        {
+            get { return Tubes.Count; }
+        }
+        public Basin(Tube lowPoint)
         {
             _basins.Add(this);
+            this.NewBasinTile(lowPoint);
         }
-
-        public void NewBasinTile(Tube tube)
+        private void NewBasinTile(Tube tube)
         {
             tube.IsEncountered = true;
-            this.Size++;
             this.Tubes.Add(tube);
-            foreach (Tube adjacent in tube.Adjacents)
+            for (int i = 0; i < tube.Adjacents.Count; i++)
             {
-                if (adjacent.Height != 9 && !adjacent.IsEncountered)
+                if (tube.Adjacents[i].Height != 9 && !tube.Adjacents[i].IsEncountered)
                 {
-                    this.NewBasinTile(adjacent);
+                    this.NewBasinTile(tube.Adjacents[i]);
                 }
             }
         }
-
-        public static int[] ThreeBiggest()
+        private static int[] ThreeLargest()
         {
             int[] sizes = { 0, 0, 0 };
-            foreach (Basin basin in _basins)
+            for (int i = 0; i < _basins.Count; i++)
             {
-                if (sizes.Min() < basin.Size)
+                if (sizes.Min() < _basins[i].Size)
                 {
-                    for (int i = 0; i < sizes.Length; i++)
+                    for (int j = 0; j < sizes.Length; j++)
                     {
-                        if (sizes[i] == sizes.Min())
+                        if (sizes[j] == sizes.Min())
                         {
-                            sizes[i] = basin.Size;
+                            sizes[j] = _basins[i].Size;
                             break;
                         }
                     }
                 }
             }
             return sizes;
+        }
+        public static int MultipleOfSizes()
+        {
+            int multiple = 1;
+            int[] largests = ThreeLargest();
+            for (int i = 0; i < largests.Length; i++)
+            {
+                multiple *= largests[i];
+            }
+            return multiple;
         }
     }
 }

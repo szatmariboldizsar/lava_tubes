@@ -11,38 +11,33 @@ namespace lava_tubes
         private static List<List<Tube>> _tubes = new List<List<Tube>>();
         public List<Tube> Adjacents { get; set; } = new List<Tube>();
         public int Height { get; set; }
-        public bool IsLowPoint { get; set; } = true;
         public bool IsEncountered { get; set; } = false;
-        public int Risk
-        {
-            get
-            { 
-                return this.IsLowPoint ? this.Height + 1 : 0; 
-            }
-        }
+        public int Risk { get; set; }
         public Tube(int height)
         {
             Height = height;
+            Risk = Height + 1;
         }
-        public static void initialize(string input)
+        public static void Initialize(string input)
         {
-            createMap(input);
-            scanAdjacents();
-            setLowPoints();
+            CreateMap(input);
+            ScanAdjacents();
+            SetLowPoints();
+            BasinScan();
         }
 
-        private static void createMap(string input)
+        private static void CreateMap(string input)
         {
             using (StreamReader reader = new StreamReader(input))
             {
                 while (!reader.EndOfStream)
                 {
-                    createRow(reader.ReadLine());
+                    CreateRow(reader.ReadLine());
                 }
             }
         }
 
-        private static void createRow(string nums)
+        private static void CreateRow(string nums)
         {
             List<Tube> tubes = new List<Tube>();
             for (int i = 0; i < nums.Length; i++)
@@ -52,7 +47,7 @@ namespace lava_tubes
             }
             _tubes.Add(tubes);
         }
-        private static void scanAdjacents()
+        private static void ScanAdjacents()
         {
             for (int i = 0; i < _tubes.Count; i++)
             {
@@ -88,7 +83,7 @@ namespace lava_tubes
                 }
             }
         }
-        private static void setLowPoints()
+        private static void SetLowPoints()
         {
             for (int i = 0; i < _tubes.Count; i++)
             {
@@ -98,7 +93,7 @@ namespace lava_tubes
                     {
                         if (_tubes[i][j].Height >= _tubes[i][j].Adjacents[k].Height)
                         {
-                            _tubes[i][j].IsLowPoint = false;
+                            _tubes[i][j].Risk = 0;
                             break;
                         }
                     }
@@ -117,16 +112,15 @@ namespace lava_tubes
             }
             return sum;
         }
-        public static void BasinScan()
+        private static void BasinScan()
         {
             foreach (List<Tube> row in _tubes)
             {
                 foreach (Tube tube in row)
                 {
-                    if (tube.IsLowPoint)
+                    if (tube.Risk > 0)
                     {
-                        Basin basin = new Basin();
-                        basin.NewBasinTile(tube);
+                        new Basin(tube);
                     }
                 }
             }

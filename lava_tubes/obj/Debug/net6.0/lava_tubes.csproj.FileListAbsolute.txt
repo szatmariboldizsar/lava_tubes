@@ -13,3 +13,18 @@ E:\Visual Studio Projects\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.dll
 E:\Visual Studio Projects\lava_tubes\lava_tubes\obj\Debug\net6.0\ref\lava_tubes.dll
 E:\Visual Studio Projects\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.pdb
 E:\Visual Studio Projects\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.genruntimeconfig.cache
+C:\GitHub\lava_tubes\lava_tubes\bin\Debug\net6.0\lava_tubes.exe
+C:\GitHub\lava_tubes\lava_tubes\bin\Debug\net6.0\lava_tubes.deps.json
+C:\GitHub\lava_tubes\lava_tubes\bin\Debug\net6.0\lava_tubes.runtimeconfig.json
+C:\GitHub\lava_tubes\lava_tubes\bin\Debug\net6.0\lava_tubes.dll
+C:\GitHub\lava_tubes\lava_tubes\bin\Debug\net6.0\lava_tubes.pdb
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.csproj.AssemblyReference.cache
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.GeneratedMSBuildEditorConfig.editorconfig
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.AssemblyInfoInputs.cache
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.AssemblyInfo.cs
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.csproj.CoreCompileInputs.cache
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.dll
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\refint\lava_tubes.dll
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.pdb
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\lava_tubes.genruntimeconfig.cache
+C:\GitHub\lava_tubes\lava_tubes\obj\Debug\net6.0\ref\lava_tubes.dll
