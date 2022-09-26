@@ -8,8 +8,8 @@ namespace lava_tubes
 {
     internal class Basin
     {
-        private static List<Basin> _basins = new List<Basin>();
-        public List<Tube> Tubes = new List<Tube>();
+        public static List<Basin> _basins { get; } = new List<Basin>();
+        public List<Tube> Tubes { get; set; } = new List<Tube>();
         public int Size
         {
             get { return Tubes.Count; }
@@ -18,6 +18,22 @@ namespace lava_tubes
         {
             _basins.Add(this);
             this.NewBasinTile(lowPoint);
+        }
+        /// <summary>
+        /// Initializes all basins
+        /// </summary>
+        public static void InitializeBasins()
+        {
+            for (int i = 0; i < Tube._tubes.Count; i++)
+            {
+                for (int j = 0; j < Tube._tubes[i].Count; j++)
+                {
+                    if (Tube._tubes[i][j].Risk > 0)
+                    {
+                        new Basin(Tube._tubes[i][j]);
+                    }
+                }
+            }
         }
         private void NewBasinTile(Tube tube)
         {
@@ -50,6 +66,9 @@ namespace lava_tubes
             }
             return sizes;
         }
+        /// <summary>
+        /// Returns the multiple of the 3 largest basins' sizes
+        /// </summary>
         public static int MultipleOfSizes()
         {
             int multiple = 1;

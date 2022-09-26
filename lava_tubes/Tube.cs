@@ -8,9 +8,9 @@ namespace lava_tubes
 {
     internal class Tube
     {
-        private static List<List<Tube>> _tubes = new List<List<Tube>>();
+        public static List<List<Tube>> _tubes { get; } = new List<List<Tube>>();
         public List<Tube> Adjacents { get; set; } = new List<Tube>();
-        public int Height { get; set; }
+        public int Height { get; }
         public bool IsEncountered { get; set; } = false;
         public int Risk { get; set; }
         public Tube(int height)
@@ -18,12 +18,15 @@ namespace lava_tubes
             Height = height;
             Risk = Height + 1;
         }
-        public static void Initialize(string input)
+        /// <summary>
+        /// Initializes all Tube objects, their adjacents and sets low points
+        /// </summary>
+        /// <param name="input">input file location</param>
+        public static void InitializeTubes(string input)
         {
             CreateMap(input);
             ScanAdjacents();
             SetLowPoints();
-            BasinScan();
         }
 
         private static void CreateMap(string input)
@@ -100,6 +103,9 @@ namespace lava_tubes
                 }
             }
         }
+        /// <summary>
+        /// Returns the sum of all low points' risk levels
+        /// </summary>
         public static int SumOfRisks()
         {
             int sum = 0;
@@ -111,19 +117,6 @@ namespace lava_tubes
                 }
             }
             return sum;
-        }
-        private static void BasinScan()
-        {
-            foreach (List<Tube> row in _tubes)
-            {
-                foreach (Tube tube in row)
-                {
-                    if (tube.Risk > 0)
-                    {
-                        new Basin(tube);
-                    }
-                }
-            }
         }
     }
 }
