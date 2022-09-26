@@ -98,5 +98,20 @@ namespace lava_tubes
             }
             return sum;
         }
+
+        public static void BasinScan()
+        {
+            foreach (List<Tube> row in _tubes)
+            {
+                foreach (Tube tube in row)
+                {
+                    if (tube.IsLowPoint)
+                    {
+                        Basin basin = new Basin();
+                        basin.NewBasinTile(tube);
+                    }
+                }
+            }
+        }
     }
 }
