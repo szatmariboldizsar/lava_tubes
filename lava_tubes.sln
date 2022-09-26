@@ -5,6 +5,11 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "lava_tubes", "lava_tubes\lava_tubes.csproj", "{5AA976D2-85CE-4B29-A088-67C71D401E54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lava_tubes.tests", "lava_tubes.tests\lava_tubes.tests.csproj", "{EAFC3CC1-61EB-4A12-A326-750D2C93FC01}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5AA976D2-85CE-4B29-A088-67C71D401E54} = {5AA976D2-85CE-4B29-A088-67C71D401E54}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{5AA976D2-85CE-4B29-A088-67C71D401E54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AA976D2-85CE-4B29-A088-67C71D401E54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AA976D2-85CE-4B29-A088-67C71D401E54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAFC3CC1-61EB-4A12-A326-750D2C93FC01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAFC3CC1-61EB-4A12-A326-750D2C93FC01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAFC3CC1-61EB-4A12-A326-750D2C93FC01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAFC3CC1-61EB-4A12-A326-750D2C93FC01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

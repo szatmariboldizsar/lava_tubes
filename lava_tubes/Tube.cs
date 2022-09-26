@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace lava_tubes
 {
-    internal class Tube
+    /// <summary>
+    /// Models and contains Lava Tubes created from an input, which holds an equal amount of numbers in each line
+    /// </summary>
+    public class Tube
     {
         public static List<List<Tube>> _tubes { get; } = new List<List<Tube>>();
         public List<Tube> Adjacents { get; set; } = new List<Tube>();
@@ -19,25 +22,89 @@ namespace lava_tubes
             Risk = Height + 1;
         }
         /// <summary>
-        /// Initializes all Tube objects, their adjacents and sets low points
+        /// Initializes all Tube objects, their adjacents and sets low points based on an input.
         /// </summary>
-        /// <param name="input">input file location</param>
+        /// <param name="input">input file location, must contain an equal amount of numbers in each line</param>
         public static void InitializeTubes(string input)
         {
-            CreateMap(input);
-            ScanAdjacents();
-            SetLowPoints();
+            try
+            {
+                CreateMap(input);
+                ScanAdjacents();
+                SetLowPoints();
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (FileNotFoundException)
+            {
+
+                Console.WriteLine("The given input does not exist!");
+            }
+        }
+        public static void InitializeTubes(Stream input)
+        {
+            try
+            {
+                CreateMap(input);
+                ScanAdjacents();
+                SetLowPoints();
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (FileNotFoundException)
+            {
+
+                Console.WriteLine("The given input does not exist!");
+            }
+        }
+        private static void CreateMap(Stream input)
+        {
+            using (StreamReader reader = new StreamReader(input))
+            {
+                string firstline = reader.ReadLine();
+                CreateRow(firstline);
+
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    if (line.Length == firstline.Length)
+                    {
+                        CreateRow(line);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Incorrect input format!");
+                    }
+                }
+            }
+            Console.WriteLine("Succesful reading of input!");
         }
 
         private static void CreateMap(string input)
         {
             using (StreamReader reader = new StreamReader(input))
-            {
-                while (!reader.EndOfStream)
                 {
-                    CreateRow(reader.ReadLine());
+                    string firstline = reader.ReadLine();
+                    CreateRow(firstline);
+
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+                    if (line.Length == firstline.Length)
+                    {
+                        CreateRow(line);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Incorrect input format!");
+                    }
                 }
             }
+            Console.WriteLine("Succesful reading of input!");
         }
 
         private static void CreateRow(string nums)
@@ -45,8 +112,16 @@ namespace lava_tubes
             List<Tube> tubes = new List<Tube>();
             for (int i = 0; i < nums.Length; i++)
             {
-                Tube currentTube = new Tube(nums[i] - '0');
-                tubes.Add(currentTube);
+                int num = nums[i] - '0';
+                if (num >= 0 && num <= 9)
+                {
+                    Tube currentTube = new Tube(num);
+                    tubes.Add(currentTube);
+                }
+                else
+                {
+                    throw new ArgumentException("Incorrect input format!");
+                }
             }
             _tubes.Add(tubes);
         }
@@ -104,7 +179,7 @@ namespace lava_tubes
             }
         }
         /// <summary>
-        /// Returns the sum of all low points' risk levels
+        /// Returns the sum of all low points' risk levels.
         /// </summary>
         public static int SumOfRisks()
         {

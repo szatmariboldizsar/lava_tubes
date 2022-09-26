@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace lava_tubes
 {
-    internal class Basin
+    public class Basin
     {
         public static List<Basin> _basins { get; } = new List<Basin>();
         public List<Tube> Tubes { get; set; } = new List<Tube>();
