@@ -7,5 +7,5 @@ Console.WriteLine("Sum of all risk levels:");
 Console.WriteLine(Tube.SumOfRisks());
 
 Basin.InitializeBasins();
-Console.WriteLine("Multiple of the 3 largest basins' sizes:");
-Console.WriteLine(Basin.MultipleOfSizes());
+Console.WriteLine("Product of the 3 largest basins' sizes:");
+Console.WriteLine(Basin.ProductOfSizes());

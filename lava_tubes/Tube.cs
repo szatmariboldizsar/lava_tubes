@@ -7,24 +7,26 @@ using System.Threading.Tasks;
 namespace lava_tubes
 {
     /// <summary>
-    /// Models and contains Lava Tubes created from an input, which holds an equal amount of numbers in each line
+    /// Models and contains Lava Tubes created from an input
     /// </summary>
     public class Tube
     {
-        public static List<List<Tube>> _tubes { get; } = new List<List<Tube>>();
+        public static List<List<Tube>> Tubes { get; set; } = new List<List<Tube>>();
+        public static bool IsComplete { get; set; } = false;
         public List<Tube> Adjacents { get; set; } = new List<Tube>();
         public int Height { get; }
         public bool IsEncountered { get; set; } = false;
         public int Risk { get; set; }
-        public Tube(int height)
+        public Tube(int height, List<Tube> row)
         {
             Height = height;
             Risk = Height + 1;
+            row.Add(this);
         }
         /// <summary>
         /// Initializes all Tube objects, their adjacents and sets low points based on an input.
         /// </summary>
-        /// <param name="input">input file location, must contain an equal amount of numbers in each line</param>
+        /// <param name="input">input file location or Stream, must contain an equal amount of numbers in each line</param>
         public static void InitializeTubes(string input)
         {
             try
@@ -41,6 +43,11 @@ namespace lava_tubes
             {
 
                 Console.WriteLine("The given input does not exist!");
+            }
+
+            if (!IsComplete)
+            {
+                Tubes.Clear();
             }
         }
         public static void InitializeTubes(Stream input)
@@ -60,6 +67,11 @@ namespace lava_tubes
 
                 Console.WriteLine("The given input does not exist!");
             }
+
+            if (!IsComplete)
+            {
+                Tubes.Clear();
+            }
         }
         private static void CreateMap(Stream input)
         {
@@ -77,7 +89,8 @@ namespace lava_tubes
                     }
                     else
                     {
-                        throw new ArgumentException("Incorrect input format!");
+
+                        throw new ArgumentException("Incorrect input format! All lines should be the same length!");
                     }
                 }
             }
@@ -100,7 +113,7 @@ namespace lava_tubes
                     }
                     else
                     {
-                        throw new ArgumentException("Incorrect input format!");
+                        throw new ArgumentException("Incorrect input format! All lines should be the same length!");
                     }
                 }
             }
@@ -109,74 +122,74 @@ namespace lava_tubes
 
         private static void CreateRow(string nums)
         {
-            List<Tube> tubes = new List<Tube>();
+            List<Tube> row = new List<Tube>();
             for (int i = 0; i < nums.Length; i++)
             {
                 int num = nums[i] - '0';
                 if (num >= 0 && num <= 9)
                 {
-                    Tube currentTube = new Tube(num);
-                    tubes.Add(currentTube);
+                    Tube currentTube = new Tube(num, row);
                 }
                 else
                 {
-                    throw new ArgumentException("Incorrect input format!");
+                    throw new ArgumentException("Incorrect input format! All characters must be numbers!");
                 }
             }
-            _tubes.Add(tubes);
+            Tubes.Add(row);
         }
         private static void ScanAdjacents()
         {
-            for (int i = 0; i < _tubes.Count; i++)
+            for (int i = 0; i < Tubes.Count; i++)
             {
-                for (int j = 0; j < _tubes[i].Count; j++)
+                for (int j = 0; j < Tubes[i].Count; j++)
                 {
                     if (i == 0)
                     {
-                        _tubes[i][j].Adjacents.Add(_tubes[i + 1][j]);
+                        Tubes[i][j].Adjacents.Add(Tubes[i + 1][j]);
                     }
-                    else if (i == _tubes.Count - 1)
+                    else if (i == Tubes.Count - 1)
                     {
-                        _tubes[i][j].Adjacents.Add(_tubes[i - 1][j]);
+                        Tubes[i][j].Adjacents.Add(Tubes[i - 1][j]);
                     }
                     else
                     {
-                        _tubes[i][j].Adjacents.Add(_tubes[i - 1][j]);
-                        _tubes[i][j].Adjacents.Add(_tubes[i + 1][j]);
+                        Tubes[i][j].Adjacents.Add(Tubes[i - 1][j]);
+                        Tubes[i][j].Adjacents.Add(Tubes[i + 1][j]);
                     }
 
                     if (j == 0)
                     {
-                        _tubes[i][j].Adjacents.Add(_tubes[i][j + 1]);
+                        Tubes[i][j].Adjacents.Add(Tubes[i][j + 1]);
                     }
-                    else if (j == _tubes[i].Count - 1)
+                    else if (j == Tubes[i].Count - 1)
                     {
-                        _tubes[i][j].Adjacents.Add(_tubes[i][j - 1]);
+                        Tubes[i][j].Adjacents.Add(Tubes[i][j - 1]);
                     }
                     else
                     {
-                        _tubes[i][j].Adjacents.Add(_tubes[i][j - 1]);
-                        _tubes[i][j].Adjacents.Add(_tubes[i][j + 1]);
+                        Tubes[i][j].Adjacents.Add(Tubes[i][j - 1]);
+                        Tubes[i][j].Adjacents.Add(Tubes[i][j + 1]);
                     }
                 }
             }
         }
         private static void SetLowPoints()
         {
-            for (int i = 0; i < _tubes.Count; i++)
+            for (int i = 0; i < Tubes.Count; i++)
             {
-                for (int j = 0; j < _tubes[i].Count; j++)
+                for (int j = 0; j < Tubes[i].Count; j++)
                 {
-                    for (int k = 0; k < _tubes[i][j].Adjacents.Count; k++)
+                    for (int k = 0; k < Tubes[i][j].Adjacents.Count; k++)
                     {
-                        if (_tubes[i][j].Height >= _tubes[i][j].Adjacents[k].Height)
+                        if (Tubes[i][j].Height >= Tubes[i][j].Adjacents[k].Height)
                         {
-                            _tubes[i][j].Risk = 0;
+                            Tubes[i][j].Risk = 0;
                             break;
                         }
                     }
                 }
             }
+            IsComplete = true;
         }
         /// <summary>
         /// Returns the sum of all low points' risk levels.
@@ -184,11 +197,11 @@ namespace lava_tubes
         public static int SumOfRisks()
         {
             int sum = 0;
-            for (int i = 0; i < _tubes.Count; i++)
+            for (int i = 0; i < Tubes.Count; i++)
             {
-                for (int j = 0; j < _tubes[i].Count; j++)
+                for (int j = 0; j < Tubes[i].Count; j++)
                 {
-                    sum += _tubes[i][j].Risk;
+                    sum += Tubes[i][j].Risk;
                 }
             }
             return sum;
