@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace lava_tubes
 {
+    /// <summary>
+    /// Models and contains Basins, can only be created after all Tubes have been created
+    /// </summary>
     public class Basin
     {
-        public static List<Basin> _basins { get; } = new List<Basin>();
+        public static List<Basin> Basins { get; set; } = new List<Basin>();
         public List<Tube> Tubes { get; set; } = new List<Tube>();
         public int Size
         {
@@ -16,23 +19,39 @@ namespace lava_tubes
         }
         public Basin(Tube lowPoint)
         {
-            _basins.Add(this);
+            Basins.Add(this);
             this.NewBasinTile(lowPoint);
+            this.ValidateBasin();
         }
         /// <summary>
         /// Initializes all basins
         /// </summary>
         public static void InitializeBasins()
         {
-            for (int i = 0; i < Tube._tubes.Count; i++)
+            if (Tube.IsComplete)
             {
-                for (int j = 0; j < Tube._tubes[i].Count; j++)
+                try
                 {
-                    if (Tube._tubes[i][j].Risk > 0)
+                    for (int i = 0; i < Tube.Tubes.Count; i++)
                     {
-                        new Basin(Tube._tubes[i][j]);
+                        for (int j = 0; j < Tube.Tubes[i].Count; j++)
+                        {
+                            if (Tube.Tubes[i][j].Risk > 0)
+                            {
+                                 new Basin(Tube.Tubes[i][j]);
+                            }
+                        }
                     }
                 }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Basins.Clear();
+                }
+            }
+            else
+            {
+                Console.WriteLine("The Tube Map hasn't been created yet.");
             }
         }
         private void NewBasinTile(Tube tube)
@@ -50,15 +69,15 @@ namespace lava_tubes
         private static int[] ThreeLargest()
         {
             int[] sizes = { 0, 0, 0 };
-            for (int i = 0; i < _basins.Count; i++)
+            for (int i = 0; i < Basins.Count; i++)
             {
-                if (sizes.Min() < _basins[i].Size)
+                if (sizes.Min() < Basins[i].Size)
                 {
                     for (int j = 0; j < sizes.Length; j++)
                     {
                         if (sizes[j] == sizes.Min())
                         {
-                            sizes[j] = _basins[i].Size;
+                            sizes[j] = Basins[i].Size;
                             break;
                         }
                     }
@@ -66,18 +85,35 @@ namespace lava_tubes
             }
             return sizes;
         }
-        /// <summary>
-        /// Returns the multiple of the 3 largest basins' sizes
-        /// </summary>
-        public static int MultipleOfSizes()
+
+        private void ValidateBasin()
         {
-            int multiple = 1;
+            int count = 0;
+            for (int i = 0; i < this.Size; i++)
+            {
+                if (this.Tubes[i].Risk > 0)
+                {
+                    count++;
+                }
+            }
+
+            if (count != 1)
+            {
+                throw new ArgumentException("Incorrect input format! All Basins should only 1 low point!");
+            }
+        }
+        /// <summary>
+        /// Returns the product of the 3 largest basins' sizes
+        /// </summary>
+        public static int ProductOfSizes()
+        {
+            int product = 1;
             int[] largests = ThreeLargest();
             for (int i = 0; i < largests.Length; i++)
             {
-                multiple *= largests[i];
+                product *= largests[i];
             }
-            return multiple;
+            return product;
         }
     }
 }
