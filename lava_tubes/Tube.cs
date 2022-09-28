@@ -17,6 +17,7 @@ namespace lava_tubes
         public int Height { get; }
         public bool IsEncountered { get; set; } = false;
         public int Risk { get; set; }
+
         public Tube(int height, List<Tube> row)
         {
             Height = height;
@@ -24,9 +25,12 @@ namespace lava_tubes
             row.Add(this);
         }
         /// <summary>
-        /// Initializes all Tube objects, their adjacents and sets low points based on an input.
+        /// Initializes all Tube objects, their adjacents and sets low points based on an input. If the input is incorrect and the Tube Map isn't complete,
+        /// it clears the static list to make sure no incorrect data can be retrieved.
         /// </summary>
-        /// <param name="input">input file location or Stream, must contain an equal amount of numbers in each line</param>
+        /// <param name="input">Input file location or Stream, must contain an equal amount of numbers in each line.</param>
+        /// <exception cref="ArgumentException">Incorrect input format is detected in the methods with exceptions, and caught here.</exception>
+        /// <exception cref="FileNotFoundException">If the input file is not found, the StreamReader throws this exception, which is then caught here.</exception>
         public static void InitializeTubes(string input)
         {
             try
@@ -73,30 +77,12 @@ namespace lava_tubes
                 Tubes.Clear();
             }
         }
-        private static void CreateMap(Stream input)
-        {
-            using (StreamReader reader = new StreamReader(input))
-            {
-                string firstline = reader.ReadLine();
-                CreateRow(firstline);
-
-                while (!reader.EndOfStream)
-                {
-                    string line = reader.ReadLine();
-                    if (line.Length == firstline.Length)
-                    {
-                        CreateRow(line);
-                    }
-                    else
-                    {
-
-                        throw new ArgumentException("Incorrect input format! All lines should be the same length!");
-                    }
-                }
-            }
-            Console.WriteLine("Succesful reading of input!");
-        }
-
+        /// <summary>
+        /// Reads the input file or input Stream, makes sure all lines are of equal length, and creates the rows in the static list
+        /// for each line.
+        /// </summary>
+        /// <param name="input">Input file location or Stream, must contain an equal amount of numbers in each line</param>
+        /// <exception cref="ArgumentException">Throws ArgumentException if not all lines are of equal length.</exception>
         private static void CreateMap(string input)
         {
             using (StreamReader reader = new StreamReader(input))
@@ -117,9 +103,36 @@ namespace lava_tubes
                     }
                 }
             }
+            Console.WriteLine("Successful reading of input!");
+        }
+        private static void CreateMap(Stream input)
+        {
+            using (StreamReader reader = new StreamReader(input))
+            {
+                string firstline = reader.ReadLine();
+                CreateRow(firstline);
+
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    if (line.Length == firstline.Length)
+                    {
+                        CreateRow(line);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Incorrect input format! All lines should be the same length!");
+                    }
+                }
+            }
             Console.WriteLine("Succesful reading of input!");
         }
-
+        /// <summary>
+        /// Creates new Tube objects from a string of numbers, and gives the constructor the correct list to contain them in.
+        /// Adds the list to the static list. Makes sure the string only contain numbers.
+        /// </summary>
+        /// <param name="nums">A string of numbers</param>
+        /// <exception cref="ArgumentException">Throws ArgumentException if the string contains non-number character.</exception>
         private static void CreateRow(string nums)
         {
             List<Tube> row = new List<Tube>();
@@ -137,6 +150,10 @@ namespace lava_tubes
             }
             Tubes.Add(row);
         }
+        /// <summary>
+        /// Loops through the static list and it's lists for Tube objects, first sets the upper and bottom,
+        /// then the left and right adjacent Tubes for the current Tube object, stores the adjacents in the objects Adjacents list.
+        /// </summary>
         private static void ScanAdjacents()
         {
             for (int i = 0; i < Tubes.Count; i++)
@@ -173,6 +190,10 @@ namespace lava_tubes
                 }
             }
         }
+        /// <summary>
+        /// Loops through the static list and it's lists for Tube objects, if any of the Tube's adjacents height is lower or equal,
+        /// sets the Risk to 0, which indicates the Tube is not at a low point.
+        /// </summary>
         private static void SetLowPoints()
         {
             for (int i = 0; i < Tubes.Count; i++)

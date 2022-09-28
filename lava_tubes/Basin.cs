@@ -17,6 +17,10 @@ namespace lava_tubes
         {
             get { return Tubes.Count; }
         }
+        /// <summary>
+        /// Adds the Basin object to the static list on creation, sets it's Tubes, then validates the Basin.
+        /// </summary>
+        /// <param name="lowPoint">Each Basin only has 1 Tube at a low point, so it is advised that we begin from that.</param>
         public Basin(Tube lowPoint)
         {
             Basins.Add(this);
@@ -24,8 +28,10 @@ namespace lava_tubes
             this.ValidateBasin();
         }
         /// <summary>
-        /// Initializes all basins
+        /// Initializes all basins from their low points. Can only work if the Tube Map have been successfully created.
         /// </summary>
+        /// <exception cref="ArgumentException">If a Basin cannot be created because input has an incorrect format, the validation
+        /// throws an ArgumentException. When this exception occurs, it clears the static list, so no incorrect data can be retrieved.</exception>
         public static void InitializeBasins()
         {
             if (Tube.IsComplete)
@@ -54,6 +60,12 @@ namespace lava_tubes
                 Console.WriteLine("The Tube Map hasn't been created yet.");
             }
         }
+        /// <summary>
+        /// Flags the given Tube as already encountered, then adds is to the Basin's Tubes. Loops through all of the adjacents of the Tube.
+        /// As a height 9 indicates a wall of the basin, checks if the adjacent's height is anything else, or if it have been encountered before.
+        /// If not, calls itself on the adjacent Tube. Completes the Basin's creation.
+        /// </summary>
+        /// <param name="tube">Should only begin from a Tube at a low point, everything else is completed through recursion.</param>
         private void NewBasinTile(Tube tube)
         {
             tube.IsEncountered = true;
@@ -66,6 +78,9 @@ namespace lava_tubes
                 }
             }
         }
+        /// <summary>
+        /// Creates an array which holds the 3 largest basins' sizes, then returns it.
+        /// </summary>
         private static int[] ThreeLargest()
         {
             int[] sizes = { 0, 0, 0 };
@@ -85,7 +100,10 @@ namespace lava_tubes
             }
             return sizes;
         }
-
+        /// <summary>
+        /// Validates the Basin after all Tubes have been added to it.
+        /// </summary>
+        /// <exception cref="ArgumentException">If the basin has more or less than 1 Tube at a low point, throws ArgumentException.</exception>
         private void ValidateBasin()
         {
             int count = 0;
@@ -103,7 +121,7 @@ namespace lava_tubes
             }
         }
         /// <summary>
-        /// Returns the product of the 3 largest basins' sizes
+        /// Returns the product of the 3 largest basins' sizes.
         /// </summary>
         public static int ProductOfSizes()
         {
