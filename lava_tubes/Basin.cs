@@ -101,7 +101,7 @@ namespace lava_tubes
             return sizes;
         }
         /// <summary>
-        /// Validates the Basin after all Tubes have been added to it.
+        /// Validates the Basin after all Tubes have been added to it, by counting its Tubes.
         /// </summary>
         /// <exception cref="ArgumentException">If the basin has more or less than 1 Tube at a low point, throws ArgumentException.</exception>
         private void ValidateBasin()
